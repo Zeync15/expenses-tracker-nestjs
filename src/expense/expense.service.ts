@@ -12,7 +12,7 @@ export class ExpenseService {
     private readonly expenseRepository: Repository<Expense>,
   ) {}
 
-  create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
+  public async create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
     const newExpense = this.expenseRepository.create(createExpenseDto);
     return this.expenseRepository.save(newExpense);
   }

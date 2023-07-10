@@ -13,7 +13,7 @@ export class Expense {
   item: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column()
   createdDate: Date;

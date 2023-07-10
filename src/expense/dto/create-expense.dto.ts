@@ -4,8 +4,8 @@ export class CreateExpenseDto {
   @IsString()
   item: string;
 
-  @IsNumber()
-  price: number;
+  @IsString()
+  price: string;
 
   @IsDateString()
   createdDate: Date;
