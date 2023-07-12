@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   NotFoundException,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { ExpenseService } from "./expense.service";
 import { CreateExpenseDto } from "./dto/create-expense.dto";
@@ -28,13 +29,13 @@ export class ExpenseController {
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.expenseService.findOne(+id);
+  findOne(@Param("id", ParseUUIDPipe) id: string) {
+    return this.expenseService.findOne(id);
   }
 
   @Patch(":id")
   async update(
-    @Param("id", ParseIntPipe) id: number,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() updateExpenseDto: UpdateExpenseDto,
   ) {
     const expense = await this.expenseService.findOne(id);
@@ -47,7 +48,7 @@ export class ExpenseController {
   }
 
   @Delete(":id")
-  remove(@Param("id", ParseIntPipe) id: number) {
+  remove(@Param("id", ParseUUIDPipe) id: string) {
     return this.expenseService.remove(id);
   }
 }

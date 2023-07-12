@@ -21,19 +21,19 @@ export class ExpenseService {
     return this.expenseRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.expenseRepository.findOneBy({ id });
   }
 
   async update(
-    id: number,
+    id: string,
     updateExpenseDto: UpdateExpenseDto,
   ): Promise<Expense> {
     await this.expenseRepository.update(id, updateExpenseDto);
     return this.findOne(id);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.expenseRepository.delete(id);
   }
 }

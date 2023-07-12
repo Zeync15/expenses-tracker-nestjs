@@ -6,17 +6,17 @@ export class Expense {
     Object.assign(this, partial);
   }
 
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column()
   item: string;
 
-  @Column()
-  price: string;
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  price: number;
 
   @Column()
-  createdDate: Date;
+  date: Date;
 
   @Column()
   category: string;

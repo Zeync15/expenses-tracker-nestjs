@@ -4,11 +4,11 @@ export class CreateExpenseDto {
   @IsString()
   item: string;
 
-  @IsString()
-  price: string;
+  @IsNumber()
+  price: number;
 
   @IsDateString()
-  createdDate: Date;
+  date: Date;
 
   @IsString()
   category: string;
