@@ -1,6 +1,5 @@
 import { registerAs } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { Expense } from "src/expense/entities/expense.entity";
 
 export default registerAs(
   "orm.config",

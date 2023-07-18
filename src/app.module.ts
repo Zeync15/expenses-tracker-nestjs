@@ -6,7 +6,7 @@ import { ExpenseModule } from "./expense/expense.module";
 import { IncomeModule } from "./income/income.module";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UserModule } from './user/user.module';
+import { UserModule } from "./user/user.module";
 import ormConfig from "./config/orm.config";
 import ormConfigProd from "./config/orm.config.prod";
 

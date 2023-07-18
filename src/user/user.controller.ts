@@ -6,15 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
-  BadRequestException,
   ParseUUIDPipe,
   NotFoundException,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
 
 @Controller("user")
 export class UserController {
@@ -36,7 +33,7 @@ export class UserController {
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    return user
+    return user;
   }
 
   @Patch(":id")
