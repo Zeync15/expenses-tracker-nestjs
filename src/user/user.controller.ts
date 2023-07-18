@@ -9,6 +9,8 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -29,12 +31,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get("curr")
   async findAll(@CurrentUser() user: User) {
-    return user
+    return user;
   }
 
-  @Get(":uuid")
-  async findOne(@Param("uuid", ParseUUIDPipe) userId: string) {
-    const user = await this.userService.findOne(userId);
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Get(":username")
+  async findUser(@Param("username") username: string) {
+    const user = await this.userService.findOne(username);
     if (!user) {
       throw new NotFoundException("User not found");
     }
