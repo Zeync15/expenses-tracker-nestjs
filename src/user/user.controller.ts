@@ -8,10 +8,14 @@ import {
   Delete,
   ParseUUIDPipe,
   NotFoundException,
+  UseGuards,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { CurrentUser } from "src/auth/current-user.decorator";
+import { User } from "./entities/user.entity";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 
 @Controller("user")
 export class UserController {
@@ -22,9 +26,10 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get("curr")
+  async findAll(@CurrentUser() user: User) {
+    return user
   }
 
   @Get(":uuid")

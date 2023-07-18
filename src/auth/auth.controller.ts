@@ -10,6 +10,7 @@ import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./local-auth.guard";
 import { JwtAuthGuard } from "./jwt-auth.guard";
 import { User } from "src/user/entities/user.entity";
+import { CurrentUser } from "./current-user.decorator";
 
 @Controller("auth")
 export class AuthController {
@@ -25,5 +26,11 @@ export class AuthController {
   @Get("profile")
   getProfile(@Request() req: any) {
     return req.user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async findOne(@CurrentUser() user: any) {
+    return user;
   }
 }
