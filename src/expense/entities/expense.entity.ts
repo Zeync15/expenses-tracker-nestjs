@@ -1,11 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/user/entities/user.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 @Entity("expense")
 export class Expense {
-  constructor(partial?: Partial<Event>) {
-    Object.assign(this, partial);
-  }
-
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -20,4 +23,13 @@ export class Expense {
 
   @Column()
   category: string;
+
+  @Column({ name: "userId" })
+  userId: string;
+
+  @ManyToOne(() => User, (user) => user.expense, {
+    nullable: false,
+  })
+  @JoinColumn({ name: "userId" })
+  user: User;
 }

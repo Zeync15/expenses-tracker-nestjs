@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Expense } from "src/expense/entities/expense.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("user")
 export class User {
@@ -21,4 +22,7 @@ export class User {
 
   @Column()
   lastName: string;
+
+  @OneToMany(() => Expense, (expense) => expense.user)
+  expense: Expense[];
 }
