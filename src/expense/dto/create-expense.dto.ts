@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class CreateExpenseDto {
   @IsString()
@@ -7,8 +7,8 @@ export class CreateExpenseDto {
   @IsNumber()
   price: number;
 
-  @IsDateString()
-  date: Date;
+  @IsString()
+  date: string;
 
   @IsString()
   category: string;

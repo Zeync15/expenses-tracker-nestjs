@@ -16,7 +16,7 @@ export class Expense {
   price: number;
 
   @Column()
-  date: Date;
+  date: string;
 
   @Column()
   category: string;

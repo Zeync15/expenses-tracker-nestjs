@@ -12,6 +12,7 @@ import {
 import { ExpenseService } from "./expense.service";
 import { CreateExpenseDto } from "./dto/create-expense.dto";
 import { UpdateExpenseDto } from "./dto/update-expense.dto";
+import * as dayjs from "dayjs";
 
 @Controller("expense")
 export class ExpenseController {
@@ -19,12 +20,19 @@ export class ExpenseController {
 
   @Post()
   async create(@Body() createExpenseDto: CreateExpenseDto) {
-    return await this.expenseService.create(createExpenseDto);
+    const formattedDate = dayjs(createExpenseDto.date).format("YYYY-MM-DD");
+    const validatedExpense = { ...createExpenseDto, date: formattedDate };
+    return await this.expenseService.create(validatedExpense);
   }
 
   @Get()
-  findAll() {
-    return this.expenseService.findAll();
+  async findAll() {
+    return await this.expenseService.findAll();
+  }
+
+  @Get("ytd")
+  findYtd() {
+    return this.expenseService.findExpensesBeforeToday();
   }
 
   @Get(":id")
