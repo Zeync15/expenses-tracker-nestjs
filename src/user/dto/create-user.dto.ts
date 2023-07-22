@@ -18,4 +18,6 @@ export class CreateUserDto {
 
   @IsEmail()
   email: string;
+
+  refreshToken: string;
 }

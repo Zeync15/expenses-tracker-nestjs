@@ -25,7 +25,7 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    return this.userService.signUp(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -45,10 +45,9 @@ export class UserController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
+    return this.userService.updateUser(id, updateUserDto, user);
   }
-
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.userService.remove(+id);
