@@ -12,19 +12,7 @@ import { JwtRefreshTokenStrategy } from "./jwt-refresh-token.strategy";
 @Module({
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],
-  imports: [
-    UserModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get("JWT_TOKEN_SECRET"),
-        signOptions: { expiresIn: "60s" },
-      }),
-      inject: [ConfigService],
-    }),
-    ConfigModule.forRoot(),
-  ],
+  imports: [UserModule, PassportModule, JwtModule, ConfigModule.forRoot()],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -29,7 +29,6 @@ export class AuthService {
   }
 
   async login(user: User) {
-    console.log(user, "wtf");
     const result = await this.validateUser(user.username, user.password);
     const payload = { sub: result.userId, username: user.username };
 
