@@ -37,17 +37,23 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Get(":username")
   async findUser(@Param("username") username: string) {
-    const user = await this.userService.findOne(username);
+    const user = await this.userService.findOneByUsername(username);
     if (!user) {
       throw new NotFoundException("User not found");
     }
     return user;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto, @CurrentUser() user: User) {
-    return this.userService.updateUser(id, updateUserDto, user);
+  async update(
+    @Param("id") userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser() user: User,
+  ) {
+    return await this.userService.updateUser(userId, updateUserDto, user);
   }
+
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.userService.remove(+id);

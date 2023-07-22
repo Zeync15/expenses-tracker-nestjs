@@ -30,7 +30,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findOne(@CurrentUser() user: any) {
+  async findOne(@CurrentUser() user: User) {
     return user;
   }
 }

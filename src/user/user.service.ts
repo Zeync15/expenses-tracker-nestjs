@@ -1,11 +1,15 @@
-import { BadRequestException, Body, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  ForbiddenException,
+  Injectable,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
-import * as argon2 from "argon2";
 
 @Injectable()
 export class UserService {
@@ -15,7 +19,7 @@ export class UserService {
   ) {}
 
   async hashPassword(password: string): Promise<string> {
-    return await argon2.hash(password);
+    return await bcrypt.hash(password, 10);
   }
 
   async signUp(@Body() createUserDto: CreateUserDto) {
@@ -49,20 +53,32 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findOneByUsername(username: string): Promise<User | undefined> {
     return this.userRepository.findOneBy({
       username,
     });
   }
 
   async updateUser(
-    updateId: string,
+    userId: string,
     updateUserDto: UpdateUserDto,
-  ): Promise<User | undefined> {
-   
-    const user = await this.userRepository.findOne(
-      
-    );
+    currentUser?: User,
+  ): Promise<User> {
+    console.log(userId, currentUser, 'update user init')
+    const user = await this.userRepository.findOneBy({
+      userId,
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (userId !== currentUser.userId) {
+      throw new ForbiddenException(
+        null,
+        "You are not authorized to change this user",
+      );
+    }
 
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);

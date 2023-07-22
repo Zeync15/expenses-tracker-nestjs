@@ -3,8 +3,8 @@ import { JwtService } from "@nestjs/jwt";
 import { User } from "src/user/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
-import * as argon2 from "argon2";
 import { ConfigService } from "@nestjs/config";
+import { UpdateUserDto } from "src/user/dto/update-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -15,13 +15,13 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, pass: string) {
-    const user = await this.userService.findOne(username);
+    const user = await this.userService.findOneByUsername(username);
 
     if (!user) {
       throw new BadRequestException("User does not exist");
     }
 
-    if (user && argon2.verify(user.password, pass)) {
+    if (user && bcrypt.compare(user.password, pass)) {
       const { password, ...result } = user;
       return result;
     }
@@ -29,10 +29,19 @@ export class AuthService {
   }
 
   async login(user: User) {
+    console.log(user, "wtf");
     const result = await this.validateUser(user.username, user.password);
     const payload = { sub: result.userId, username: user.username };
 
     const tokens = await this.getTokens(payload.sub, payload.username);
+
+    const currentUser = await this.userService.findOneByUsername(user.username);
+
+    await this.updateRefreshToken(
+      payload.sub,
+      tokens.refresh_token,
+      currentUser,
+    );
     return tokens;
   }
 
@@ -66,7 +75,18 @@ export class AuthService {
     };
   }
 
-  async updateRefreshToken(userId: string, refresh_token: string) {
-    const hashedRefreshToken = await this.userService.updateUser()
+  async updateRefreshToken(
+    userId: string,
+    refresh_token: string,
+    currentUser: User,
+  ) {
+    const hashedRefreshToken = await bcrypt.hash(refresh_token, 10);
+    await this.userService.updateUser(
+      userId,
+      {
+        refresh_token: hashedRefreshToken,
+      },
+      currentUser,
+    );
   }
 }
