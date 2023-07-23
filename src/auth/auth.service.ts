@@ -4,7 +4,6 @@ import { User } from "src/user/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
-import { UpdateUserDto } from "src/user/dto/update-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -28,6 +27,7 @@ export class AuthService {
     return null;
   }
 
+  // probably need to refactor it
   async login(user: User) {
     const result = await this.validateUser(user.username, user.password);
     const payload = { sub: result.userId, username: user.username };
@@ -69,6 +69,7 @@ export class AuthService {
     ]);
 
     return {
+      username,
       access_token,
       refresh_token,
     };

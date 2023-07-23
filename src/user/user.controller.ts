@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   NotFoundException,
   UseGuards,
   UseInterceptors,

@@ -23,4 +23,3 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   refresh_token: string;
 }
-
