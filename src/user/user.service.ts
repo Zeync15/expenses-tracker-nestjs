@@ -1,8 +1,10 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   ForbiddenException,
   Injectable,
+  UseInterceptors,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -53,9 +55,16 @@ export class UserService {
     return `This action returns all user`;
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   async findOneByUsername(username: string): Promise<User | undefined> {
     return this.userRepository.findOneBy({
       username,
+    });
+  }
+
+  async findOneById(userId: string): Promise<User | undefined> {
+    return this.userRepository.findOneBy({
+      userId,
     });
   }
 

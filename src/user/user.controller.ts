@@ -23,13 +23,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
   async create(@Body() createUserDto: CreateUserDto) {
     return this.userService.signUp(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get("curr")
-  async findAll(@CurrentUser() user: User) {
+  async findCurrentUser(@CurrentUser() user: User) {
     return user;
   }
 
