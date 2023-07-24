@@ -25,4 +25,8 @@ export class User {
 
   @OneToMany(() => Expense, (expense) => expense.user)
   expense: Expense[];
+
+  @Column({ nullable: true })
+  @Exclude()
+  refresh_token?: string;
 }

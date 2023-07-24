@@ -1,10 +1,16 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "src/user/entities/user.entity";
 import { UserService } from "src/user/user.service";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
 
+// refresh token tutorial from:
+// https://www.elvisduru.com/blog/nestjs-jwt-authentication-refresh-token
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,23 +27,22 @@ export class AuthService {
     }
 
     if (user && bcrypt.compare(user.password, pass)) {
-      const { password, ...result } = user;
+      const { userId, username } = user;
+      const result = { userId, username };
       return result;
     }
     return null;
   }
 
-  // probably need to refactor it
   async login(user: User) {
-    const result = await this.validateUser(user.username, user.password);
-    const payload = { sub: result.userId, username: user.username };
+    const payload = await this.validateUser(user.username, user.password);
 
-    const tokens = await this.getTokens(payload.sub, payload.username);
+    const tokens = await this.getTokens(payload.userId, payload.username);
 
     const currentUser = await this.userService.findOneByUsername(user.username);
 
     await this.updateRefreshToken(
-      payload.sub,
+      payload.userId,
       tokens.refresh_token,
       currentUser,
     );
@@ -69,7 +74,6 @@ export class AuthService {
     ]);
 
     return {
-      username,
       access_token,
       refresh_token,
     };
@@ -80,13 +84,31 @@ export class AuthService {
     refresh_token: string,
     currentUser: User,
   ) {
-    const hashedRefreshToken = await bcrypt.hash(refresh_token, 10);
     await this.userService.updateUser(
       userId,
       {
-        refresh_token: hashedRefreshToken,
+        refresh_token,
       },
       currentUser,
     );
+  }
+
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.userService.findOneById(userId);
+    if (!user || !user.refresh_token)
+      throw new ForbiddenException("Access Denied User");
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    const refreshTokenMatches = await bcrypt.compare(
+      user.refresh_token,
+      hashedRefreshToken,
+    );
+
+    if (!refreshTokenMatches)
+      throw new ForbiddenException("Access Denied Not Match");
+    const tokens = await this.getTokens(user.userId, user.username);
+    await this.updateRefreshToken(user.userId, tokens.refresh_token, user);
+    return tokens;
   }
 }

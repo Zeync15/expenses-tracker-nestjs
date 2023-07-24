@@ -8,7 +8,7 @@ import { Request } from "express";
 @Injectable()
 export class JwtRefreshTokenStrategy extends PassportStrategy(
   Strategy,
-  "jwt-refresh",
+  "jwt-refresh-token",
 ) {
   constructor(configService: ConfigService, private authService: AuthService) {
     super({
