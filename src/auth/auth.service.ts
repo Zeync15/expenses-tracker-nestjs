@@ -76,6 +76,7 @@ export class AuthService {
     return {
       access_token,
       refresh_token,
+      expires_in: 900000,
     };
   }
 
