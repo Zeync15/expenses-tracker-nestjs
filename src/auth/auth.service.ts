@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "src/user/entities/user.entity";
@@ -58,7 +59,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>("JWT_TOKEN_SECRET"),
-          expiresIn: "15m",
+          expiresIn: "10s",
         },
       ),
       this.jwtService.signAsync(
@@ -68,7 +69,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>("REFRESH_TOKEN_SECRET"),
-          expiresIn: "7d",
+          expiresIn: "20s",
         },
       ),
     ]);
@@ -96,6 +97,7 @@ export class AuthService {
 
   async refreshTokens(userId: string, refreshToken: string) {
     const user = await this.userService.findOneById(userId);
+    Logger.log(refreshToken)
     if (!user || !user.refresh_token)
       throw new ForbiddenException("Access Denied User");
 
